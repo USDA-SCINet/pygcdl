@@ -26,6 +26,8 @@ class PyGeoCDL:
 		return r.json()
 
 	def uploadGeom(self, file):
-		files = {"file": (file, open(file, 'rb'), 'application/json', {'Expires': '0'})}
-		r = requests.post(self.url_base + '/upload_geom', files=files)
+		headers = {"Content-Type": "multipart/form-data", "accept": "application/json"}
+		files = {"file": (file, open(file, 'rb'), 'application/geo+json', {'Expires': '0'})}
+		r = requests.post(self.url_base + '/upload_geom', headers = headers, files=files)
+		print(r.text)
 		return r.text
