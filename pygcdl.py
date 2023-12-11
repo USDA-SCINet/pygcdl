@@ -18,7 +18,7 @@ class PyGeoCDL:
 
         return {val['id']: val['name'] for val in r.json()}
 
-    def view_metadata(self, dsid):
+    def get_dataset_info(self, dsid):
         """
         Returns all metadata for the dataset with the given dataset ID. The
         metadata are returned as a dictionary of key: value pairs.
@@ -29,6 +29,10 @@ class PyGeoCDL:
         return r.json()
 
     def upload_geometry(self, file):
+    	# This function uploads a user geometry to the GeoCDL
+		# REST API and returns a geometry upload ID to use
+		# in subset requests.
+
         if not os.path.isfile(file):
             raise Exception("File not found")
 
@@ -36,7 +40,6 @@ class PyGeoCDL:
 
         if file_ext == ".geojson" or file_ext == ".zip" or file_ext == ".csv":
             files = {"geom_file": (file, open(file, 'rb'))}
-            #headers = {'Content-type': 'multipart/form-data; charset=UTF-8'}
             r = requests.post(self.url_base + '/upload_geom', files=files)
             print(r.text)
 
@@ -44,10 +47,12 @@ class PyGeoCDL:
 
         elif file_ext == ".shp":
             # Get paths for required auxiliary files: dbf, shx, prj.
-            shp_file_path = os.path.abspath(file) #ie /dir/to/file_name.shp
+            shp_file_path = os.path.abspath(file)
             base_data_dir = os.path.dirname(os.path.abspath(file))
-            base_file_path = os.path.splitext(shp_file_path)[0] #ie /dir/to/file_name
-            base_file_name = os.path.splitext(os.path.basename(shp_file_path))[0] #ie file_name
+            base_file_path = os.path.splitext(shp_file_path)[0] 
+            base_file_name = os.path.splitext(
+            	os.path.basename(shp_file_path)
+           	)[0]
             dbf_file_path = base_file_path + ".dbf"
             if not os.path.isfile(dbf_file_path):
                 raise Exception("Insufficient auxiliary shapefile files")
@@ -58,7 +63,7 @@ class PyGeoCDL:
             if not os.path.isfile(prj_file_path):
                 raise Exception("Insufficient auxiliary shapefile files")
 
-            # Create a new, temporary folder for the shape file contents to be
+            # Create a new, temporary folder for the shapefile contents to be
             # zipped in.
             new_data_dir = os.path.abspath(
                 os.path.join(base_data_dir, base_file_name)
@@ -71,7 +76,7 @@ class PyGeoCDL:
             )
             shutil.copyfile(
                 file,
-                os.path.join(new_data_dir, os.path.basename(dbf_file_path)
+                os.path.join(new_data_dir, os.path.basename(dbf_file_path))
             )
             shutil.copyfile(
                 file,
@@ -82,6 +87,7 @@ class PyGeoCDL:
                 os.path.join(new_data_dir, os.path.basename(prj_file_path))
             )
 
+            # Create a zip file with the shapefile files
             shutil.make_archive(
                 base_dir=new_data_dir, root_dir=base_file_path, format='zip',
                 base_name=base_file_name
@@ -92,6 +98,7 @@ class PyGeoCDL:
             files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
             r = requests.post(self.url_base + '/upload_geom', files=files)
 
+            # Remove the temporary directory with copies of the shapefile files
             shutil.rmtree(new_data_dir)
             print(r.text)
 
