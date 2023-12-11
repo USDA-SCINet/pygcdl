@@ -2,6 +2,7 @@ import requests
 import os
 from pathlib import Path
 import shutil
+import utils
 
 class PyGeoCDL:
     def __init__(self, url_base=None):
@@ -29,9 +30,9 @@ class PyGeoCDL:
         return r.json()
 
     def upload_geometry(self, file):
-    	# This function uploads a user geometry to the GeoCDL
-		# REST API and returns a geometry upload ID to use
-		# in subset requests.
+        # This function uploads a user geometry to the GeoCDL
+        # REST API and returns a geometry upload ID to use
+        # in subset requests.
 
         if not os.path.isfile(file):
             raise Exception("File not found")
@@ -51,7 +52,7 @@ class PyGeoCDL:
             base_data_dir = os.path.dirname(os.path.abspath(file))
             base_file_path = os.path.splitext(shp_file_path)[0] 
             base_file_name = os.path.splitext(
-            	os.path.basename(shp_file_path)
+                os.path.basename(shp_file_path)
            	)[0]
             dbf_file_path = base_file_path + ".dbf"
             if not os.path.isfile(dbf_file_path):
@@ -106,3 +107,25 @@ class PyGeoCDL:
         else:
             raise Exception("File format not yet supported")
 
+    def download_polygon_subset(
+        self,
+        dsvars,
+        dates = None,
+        years = None,
+        months = None,
+        days = None
+    ):
+        dsvars_string = utils.format_dsvars(dsvars)
+        date_string = utils.format_dates(
+            dates=dates, years=years, months=months, days = days
+        )
+        print("dsvars: ", dsvars_string)
+        print("dates: ", date_string)
+
+	# def download_polygon_subset(
+	# 	self, dsvars, dates = None, years = None
+	# ):
+	# 	print("years: ", years)
+	# 	ds = utils.format_dsvars(dsvars)
+	# 	dates = utils.format_dates(years=years)
+	# 	return("blah")
