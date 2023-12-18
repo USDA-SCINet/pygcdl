@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import shutil
 import utils
+import tempfile
 
 class PyGeoCDL:
     def __init__(self, url_base=None):
@@ -47,62 +48,13 @@ class PyGeoCDL:
             return r.text
 
         elif file_ext == ".shp":
-            # Get paths for required auxiliary files: dbf, shx, prj.
-            shp_file_path = os.path.abspath(file)
-            base_data_dir = os.path.dirname(os.path.abspath(file))
-            base_file_path = os.path.splitext(shp_file_path)[0] 
-            base_file_name = os.path.splitext(
-                os.path.basename(shp_file_path)
-           	)[0]
-            dbf_file_path = base_file_path + ".dbf"
-            if not os.path.isfile(dbf_file_path):
-                raise Exception("Insufficient auxiliary shapefile files")
-            shx_file_path = base_file_path + ".shx"
-            if not os.path.isfile(shp_file_path):
-                raise Exception("Insufficient auxiliary shapefile files")
-            prj_file_path = base_file_path + ".prj"
-            if not os.path.isfile(prj_file_path):
-                raise Exception("Insufficient auxiliary shapefile files")
 
-            # Create a new, temporary folder for the shapefile contents to be
-            # zipped in.
-            new_data_dir = os.path.abspath(
-                os.path.join(base_data_dir, base_file_name)
-            )
-            os.mkdir(new_data_dir)
-
-            # Copy the shapefile contents to the temporary directory.    
-            shutil.copyfile(
-                file, os.path.join(new_data_dir, os.path.basename(file))
-            )
-            shutil.copyfile(
-                file,
-                os.path.join(new_data_dir, os.path.basename(dbf_file_path))
-            )
-            shutil.copyfile(
-                file,
-                os.path.join(new_data_dir,  os.path.basename(shx_file_path))
-            )
-            shutil.copyfile(
-                file,
-                os.path.join(new_data_dir, os.path.basename(prj_file_path))
-            )
-
-            # Create a zip file with the shapefile files
-            shutil.make_archive(
-                base_dir=new_data_dir, root_dir=base_file_path, format='zip',
-                base_name=base_file_name
-            )
-            zip_file_name = base_file_name + ".zip"
-            zip_file_path = os.path.join(base_data_dir, zip_file_name)
+            # Call utility function to zip all auxillary shapefile files 
+            # together
+            zip_file_path = str(utils.zip_shapefiles(file))
 
             files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
             r = requests.post(self.url_base + '/upload_geom', files=files)
-
-            # Remove the temporary directory with copies of the shapefile files
-            shutil.rmtree(new_data_dir)
-            print(r.text)
-
             return r.text
         else:
             raise Exception("File format not yet supported")
@@ -121,11 +73,3 @@ class PyGeoCDL:
         )
         print("dsvars: ", dsvars_string)
         print("dates: ", date_string)
-
-	# def download_polygon_subset(
-	# 	self, dsvars, dates = None, years = None
-	# ):
-	# 	print("years: ", years)
-	# 	ds = utils.format_dsvars(dsvars)
-	# 	dates = utils.format_dates(years=years)
-	# 	return("blah")

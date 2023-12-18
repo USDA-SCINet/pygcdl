@@ -13,7 +13,7 @@ pygcdl_obj = pygcdl.PyGeoCDL()
 
 pygcdl_obj.upload_geometry("clay_aoi.geojson")
 pygcdl_obj.upload_geometry("jer_bounds_sf.shp")
-pygcdl_obj.upload_geometry("jer_bounds_sf.zip")
+#pygcdl_obj.upload_geometry("jer_bounds_sf.zip")
 
 # Currently, download_polygon_subset just runs the helper functions
 # utils.format_dsvars(), and utils.format_dates() and returns the
@@ -46,5 +46,3 @@ print("Call 3:")
 pygcdl_obj.download_polygon_subset(dict_df, years=years, months=months)
 print("Call 4:")
 pygcdl_obj.download_polygon_subset(numpy_df, years=years, days=days)
-
-#print(datasets_vars)
