@@ -8,7 +8,7 @@ import tempfile
 class PyGeoCDL:
     def __init__(self, url_base=None):
         if url_base is None:
-            self.url_base='http://127.0.0.1:8000'
+            self.url_base = 'http://127.0.0.1:8000'
 
     def list_datasets(self):
         """
@@ -43,9 +43,8 @@ class PyGeoCDL:
         if file_ext == ".geojson" or file_ext == ".zip" or file_ext == ".csv":
             files = {"geom_file": (file, open(file, 'rb'))}
             r = requests.post(self.url_base + '/upload_geom', files=files)
-            print(r.text)
-
-            return r.text
+            response_dict = r.json()
+            return response_dict["geom_guid"]
 
         elif file_ext == ".shp":
 
@@ -55,7 +54,8 @@ class PyGeoCDL:
 
             files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
             r = requests.post(self.url_base + '/upload_geom', files=files)
-            return r.text
+            response_dict = r.json()
+            return response_dict["geom_guid"]
         else:
             raise Exception("File format not yet supported")
 
@@ -65,11 +65,24 @@ class PyGeoCDL:
         dates = None,
         years = None,
         months = None,
-        days = None
+        days = None,
+        t_crs = None, 
+        resolution = None,
+        t_geom = None,
+        out_format = 'geotiff',
+        grain_method = 'strict',
+        validate_method = 'strict',
+        ri_method = 'nearest',
+        dsn = '.',
+        req_name = None
     ):
+        # Current status: calls helper functions and prints out results
         dsvars_string = utils.format_dsvars(dsvars)
         date_string = utils.format_dates(
-            dates=dates, years=years, months=months, days = days
+            dates=dates, years=years, months=months, days=days
         )
+        geom_string = utils.format_geometry("subset_polygon", t_geom)
         print("dsvars: ", dsvars_string)
         print("dates: ", date_string)
+        print("geom: ", geom_string)
+        

@@ -5,6 +5,7 @@ import numpy as np
 import urllib.parse
 import zipfile
 from pathlib import Path
+import pygcdl
 
 
 def zip_shapefiles(file: str):
@@ -37,13 +38,13 @@ def format_dsvars(ds):
         dsvars = ds.iloc[:,0:2]
         dsvars.columns = ["dataset", "variable"]
     elif isinstance(ds, np.ndarray):
-        dsvars = pd.DataFrame(ds, columns = ["dataset", "variable"])
+        dsvars = pd.DataFrame(ds, columns=["dataset", "variable"])
         dsvars = dsvars.iloc[:,0:2]
     elif isinstance(ds, list):
-        dsvars = pd.DataFrame(ds, columns = ["dataset", "variable"])
+        dsvars = pd.DataFrame(ds, columns=["dataset", "variable"])
         dsvars = dsvars.iloc[:,0:2]
     elif isinstance(ds, dict):
-        dsvars = pd.DataFrame(columns = ["dataset", "variable"])
+        dsvars = pd.DataFrame(columns=["dataset", "variable"])
         for dataset, var_list in ds.items():
             for var in var_list:
                 dsvars.loc[len(dsvars.index)] = [dataset, var]
@@ -82,3 +83,17 @@ def format_dates(dates=None, years=None, months=None, days=None):
 
 def format_geometry(endpoint, geom):
     spatial_subset = ""
+    if geom is None:
+        print("Geom is None")
+        return spatial_subset
+    elif isinstance(geom, str):
+        #if geom is a guid
+        if len(geom) == 36 and not "." in geom:
+            spatial_subset += "&geom_guid=" + geom
+        else: #assume geom is a filename, attempt to upload
+            pygcdl_obj = pygcdl.PyGeoCDL()
+            geom_guid = pygcdl_obj.upload_geometry(geom)
+            spatial_subset += "&geom_guid=" + geom_guid
+    else: 
+        raise Exception("Geometry configuration not implemented")
+    return(spatial_subset)
