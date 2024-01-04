@@ -11,9 +11,24 @@ pygcdl_obj = pygcdl.PyGeoCDL()
 
 # Upload sample geometries in various file formats
 
-guid1 = pygcdl_obj.upload_geometry("clay_aoi.geojson")
-guid2 = pygcdl_obj.upload_geometry("jer_bounds_sf.shp")
-#pygcdl_obj.upload_geometry("jer_bounds_sf.zip")
+# Attempt to upload a geodataframe
+subset_counties1 = gpd.read_file("sample_data/subset_counties1.shp")
+subset_counties2 = gpd.read_file("sample_data/subset_counties2.shp")
+subset_counties3 = gpd.read_file("sample_data/subset_counties3.shp")
+subset_counties4 = gpd.read_file("sample_data/subset_counties4.shp")
+subset_counties5 = gpd.read_file("sample_data/subset_counties5.shp")
+subset_counties6 = gpd.read_file("sample_data/subset_counties6.shp")
+subset_counties7 = gpd.read_file("sample_data/subset_counties7.shp")
+subset_counties8 = gpd.read_file("sample_data/subset_counties8.shp")
+
+guid1 = pygcdl_obj.upload_geometry(subset_counties1)
+guid2 = pygcdl_obj.upload_geometry(subset_counties2)
+guid3 = pygcdl_obj.upload_geometry(subset_counties3)
+guid4 = pygcdl_obj.upload_geometry(subset_counties4)
+guid5 = pygcdl_obj.upload_geometry(subset_counties5)
+guid6 = pygcdl_obj.upload_geometry(subset_counties6)
+guid7 = pygcdl_obj.upload_geometry(subset_counties7)
+guid8 = pygcdl_obj.upload_geometry(subset_counties8)
 
 # Currently, download_polygon_subset just runs the helper functions
 # utils.format_dsvars(), and utils.format_dates() and returns the
@@ -49,7 +64,7 @@ pygcdl_obj.download_polygon_subset(matrix_df, dates=dates2, \
     t_geom = guid2)
 print("Call 3:")
 pygcdl_obj.download_polygon_subset(dict_df, years=years, months=months, \
-    t_geom = "jer_bounds_sf.shp")
+    t_geom = "sample_data/subset_counties4.shp")
 print("Call 4:")
 pygcdl_obj.download_polygon_subset(numpy_df, years=years, days=days, \
-    t_geom = "clay_aoi.geojson")
+    t_geom = "sample_data/clay_aoi.geojson")

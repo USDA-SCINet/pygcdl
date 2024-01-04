@@ -6,6 +6,8 @@ import zipfile
 import pandas as pd
 import urllib.parse
 import numpy as np
+import geopandas as gpd
+import shapely
 
 class PyGeoCDL:
     def __init__(self, url_base=None):
@@ -32,34 +34,74 @@ class PyGeoCDL:
 
         return r.json()
 
-    def upload_geometry(self, file):
+    def upload_geometry(self, geom):
         # This function uploads a user geometry to the GeoCDL
         # REST API and returns a geometry upload ID to use
         # in subset requests.
 
-        if not os.path.isfile(file):
-            raise Exception("File not found")
+        # Case 1: geom is a file
+        if isinstance(geom, str):
+            if not Path(geom).is_file():
+                raise Exception("File not found")
+            file_ext = Path(geom).suffix
+            if file_ext == ".geojson" or file_ext == ".zip" \
+                or file_ext == ".csv":
+                files = {"geom_file": (geom, open(geom, 'rb'))}
+                r = requests.post(self.url_base + '/upload_geom', files=files)
+                response_dict = r.json()
+                return response_dict["geom_guid"]
 
-        file_ext = os.path.splitext(file)[1]
+            elif file_ext == ".shp":
 
-        if file_ext == ".geojson" or file_ext == ".zip" or file_ext == ".csv":
-            files = {"geom_file": (file, open(file, 'rb'))}
-            r = requests.post(self.url_base + '/upload_geom', files=files)
-            response_dict = r.json()
-            return response_dict["geom_guid"]
+                # Call utility function to zip all auxillary shapefile files 
+                # together
+                zip_file_path = str(self._zip_shapefiles(geom))
 
-        elif file_ext == ".shp":
+                files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
+                r = requests.post(self.url_base + '/upload_geom', files=files)
+                response_dict = r.json()
+                return response_dict["geom_guid"]
+            else:
+                raise Exception("File format not yet supported")
 
-            # Call utility function to zip all auxillary shapefile files 
-            # together
-            zip_file_path = str(self._zip_shapefiles(file))
+        # Case 2: geom is a geodataframe
+        elif isinstance(geom, gpd.GeoDataFrame):
+            #Best case scenario: one single polygon
+            if (len(geom) == 1 and all(geom.geom_type == "Polygon")):
+                with tempfile.TemporaryDirectory() as t:
+                    outpath = Path(t) / "upload.shp"
+                    geom.to_file(outpath)
+                    geom = self.upload_geometry(str(outpath))
+                return geom
 
-            files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
-            r = requests.post(self.url_base + '/upload_geom', files=files)
-            response_dict = r.json()
-            return response_dict["geom_guid"]
+            else:
+                geom_union = geom.unary_union
+                if geom_union.geom_type == "Polygon":
+                    upload_gdf = gpd.GeoDataFrame(index=[0], crs = geom.crs, 
+                        geometry=[geom_union])
+                    guid = self.upload_geometry(upload_gdf)
+                    return guid
+                elif geom_union.geom_type == "MultiPolygon":
+                    union_area = geom_union.area 
+                    convex_hull = geom_union.convex_hull
+                    convex_hull_area = convex_hull.area
+                    ratio = union_area / convex_hull_area
+                    if ratio > 0.8:
+                        upload_gdf = gpd.GeoDataFrame(
+                            index=[0], 
+                            crs = geom.crs,
+                            geometry=[convex_hull])
+                        guid = self.upload_geometry(upload_gdf)
+                        return guid
+                    else: 
+                        upload_gdf = gpd.GeoDataFrame(
+                            index=range(len(geom_union.geoms)), 
+                            crs = geom.crs, 
+                            geometry=list(geom_union.geoms))
+                        guid = [self.upload_geometry(upload_gdf[upload_gdf.index == i]) for i in range(len(upload_gdf))]
+                        return guid
         else:
-            raise Exception("File format not yet supported")
+            raise Exception("Geometry not supported")
 
     def download_polygon_subset(
         self,
@@ -174,11 +216,16 @@ class PyGeoCDL:
             return spatial_subset
         elif isinstance(geom, str):
             #if geom is a guid
+
             if len(geom) == 36 and not "." in geom:
                 spatial_subset += "&geom_guid=" + geom
             else: #assume geom is a filename, attempt to upload
                 geom_guid = self.upload_geometry(geom)
                 spatial_subset += "&geom_guid=" + geom_guid
+        elif isinstance(geom, list) and \
+            all(len(geom[i]) == 36 for i in range(len(geom))):
+            for i in range(len(geom)):
+                spatial_subset += "&geom_guid" + geom[i]
         else: 
             raise Exception("Geometry configuration not implemented")
         return(spatial_subset)
