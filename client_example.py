@@ -1,12 +1,10 @@
-# This script is "bug-avoidant", in that the api calls specified avoid known 
-# issues that are currently being troubleshot. Removal of the CRS parameter may
-# cause an Internal Server Error and cause the data to fail to download.
+'''
+This code presents several ways to download a subset of PRISM data using the pygcdl interface of the GCDL API.
 
-# This code presents four different ways to download the same subset of PRISM
-# data, including two ways to specify the spatial data and two ways to specify
-# the temporal data. The user can confirm that the data downloaded from each
-# of the four API calls are equivalent.
+The first four API requests present four different ways to download the same subset of PRISM data, including two ways to specify the spatial data and two ways to specify the temporal data. The user can confirm that the data downloaded from each of the four API calls are equivalent.
+'''
 
+# First we import the necessary libraries
 import sys
 import pygcdl
 import geopandas as gpd
@@ -15,26 +13,51 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
+# Create the pygcdl object
 pygcdl_obj = pygcdl.PyGeoCDL()
 
-# First we request information about what datasets are available, then we
-# request more information about the PRISM dataset
+# We request information about what datasets are available, then we request 
+# more information about the PRISM dataset specifically
 
 print(pygcdl_obj.list_datasets())
 print(pygcdl_obj.get_dataset_info("PRISM"))
 
+# We specify the spatial extend of our requests. We can either use a GUID (an 
+# identifier for uploaded geometries), or a set of clip coordinates. Here, we 
+# will show two different ways to create a GUID for a spatial object, and one 
+# way to specify clip coordinates
+
+# First, we create a GUID by creating a geopandas object, and uploading that 
+# object.
 jer_bounds_sf = gpd.read_file("sample_data/jer_bounds_sf.shp")
+guid0 = pygcdl_obj.upload_geometry(jer_bounds_sf) # upload geodataframe
 crs_jer = jer_bounds_sf.crs
 
-# Here we create guids from the same data in two ways.
-# First, we upload a file, then we upload a geodataframe.
-guid0 = pygcdl_obj.upload_geometry("sample_data/jer_bounds_sf.shp")
-guid1 = pygcdl_obj.upload_geometry(jer_bounds_sf)
+# Next, we will create a GUID by directly uploading the file. 
+guid1 = pygcdl_obj.upload_geometry("sample_data/jer_bounds_sf.shp")
 
+# Now, guid0 and guid1 both reference the same polygon information. This is just
+# done to illustrate the different ways to use the upload_geometry() function. 
+# In practice, only one call to upload_geometry() is needed.
 
-prism_df = pd.DataFrame([["PRISM", "ppt"]], columns =
-    ["dataset", "variable"])
+# Lastly, we will create a numpy array of coordinates to represent our spatial
+# clip. Users can either specify all of the coordinates of a polygon, or the 
+# corners of a bounding box. These coordinates represent the bounding box of
+# the jer_bounds_sf polygon, and should be read in the same CRS as the
+# jer_bounds_sf polygon.
 
+clip_coords = np.array([[324437.940,3633604.250],[358735.940,3593682.250]])
+
+# Next, we specify the dataset and variables we will request
+
+prism_df = pd.DataFrame(
+    [["PRISM", "ppt"]], 
+    columns=["dataset", "variable"])
+
+# We specify the temporal information of our request. Note that in each
+# request, we will use either the "dates" variable OR the 
+# "years"/"months"/"days" variables. These two options are included to
+# illustrate the different ways to specify temporal information.
 dates = "2000-01-01:2000-01-03"
 years = "2000"
 months = "01"
@@ -51,16 +74,19 @@ for out in output_dirs:
     if not out.is_dir():
         out.mkdir()
 
-print("Call 1:")
+# First, we request data using the "dates" string, and the guid0 object, which 
+# we got from uploading our spatial data as a geodataframe
+print("Request 1:")
 pygcdl_obj.download_polygon_subset(
     prism_df, 
     dates=dates, 
     t_geom=guid0,
     dsn=output1,
-    t_crs=crs_jer
     )
 
-print("Call 2:")
+# We can make an equivalent request by using the "years", "months", and "days"
+# variable instead of the "dates" variable.
+print("Request 2:")
 pygcdl_obj.download_polygon_subset(
     prism_df, 
     years=years,
@@ -68,25 +94,31 @@ pygcdl_obj.download_polygon_subset(
     days=days, 
     t_geom=guid0,
     dsn=output2,
-    t_crs=crs_jer
     )
 
-print("Call 3:")
+# We can make another equivalent request by using guid1 instead of guid0.
+print("Request 3:")
 pygcdl_obj.download_polygon_subset(
     prism_df,
     dates=dates,
     t_geom=guid1,
     dsn=output3,
-    t_crs=crs_jer
     )
 
-print("Call 4:")
+# Lastly, we can make a similar request by using the clipping coordinates data
+# instead of a GUID. Note that the spatial data here is slightly different from
+# the spatial extent of the previous requests since the coordinates refer to the
+# bounding box of the jer_bounds_sf polygon.
+
+# Also, note that we must specify the t_crs variable here to ensure GCDL knows
+# what CRS the coordinates are in.
+print("Request 4:")
 pygcdl_obj.download_polygon_subset(
     prism_df, 
     years=years,
     months=months,
     days=days, 
-    t_geom=guid1,
+    t_geom=clip_coords,
     dsn=output4,
     t_crs=crs_jer
     )

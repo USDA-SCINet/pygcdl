@@ -213,12 +213,18 @@ class PyGeoCDL:
             suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
             output_dir = "_".join([basename, suffix])
         
-        spatial_params = param_dict["geom_guid"]
-        if isinstance(spatial_params, str):
-            param_dict["geom_guid"] = [spatial_params]
+        # Check to see if EITHER clip for geom_guid is provided.
+        GUID = False
+        if "geom_guid" in param_dict.keys():
+            GUID = True
+            spatial_params = param_dict["geom_guid"]
+            if isinstance(spatial_params, str):
+                param_dict["geom_guid"] = [spatial_params]
+                num_queries = 1
+            elif isinstance(spatial_params, list):
+                num_queries = len(spatial_params)
+        elif "clip" in param_dict.keys():
             num_queries = 1
-        elif isinstance(spatial_params, list):
-            num_queries = len(spatial_params)
         else:
             raise Exception("No query provided")
             return
@@ -230,9 +236,10 @@ class PyGeoCDL:
             out = output_dir + "_" + str(q+1)
             subset_dir = Path(dsn) / Path(out)
             subset_zip = Path(str(subset_dir) + ".zip")
-            req_spatial = param_dict["geom_guid"][q]
             params = param_dict.copy()
-            params["geom_guid"] = req_spatial
+            if GUID:
+                req_spatial = param_dict["geom_guid"][q]
+                params["geom_guid"] = req_spatial
             r = requests.get(query_str, params=params, headers=headers)
             print(r.url)
             if r.status_code >= 400:
@@ -330,19 +337,45 @@ class PyGeoCDL:
         if geom is None:
             print("No geometry specified")
             return spatial_subset
+
+        # A string geom could be either a guid or a filename
         elif isinstance(geom, str):
-            #if geom is a single guid
-            if len(geom) == 36 and not "." in geom:
+            # if geom is a single guid
+            if len(geom) == 36 and not "." in geom and "(" not in geom:
                 spatial_subset["geom_guid"] = geom
-            else: #assume geom is a filename, attempt to upload
+            elif (".zip" in geom or ".shp" in geom or ".geojson" in geom or
+                    ".csv" in geom): 
+                # assume geom is a filename, attempt to upload
                 geom_guid = self.upload_geometry(geom)
                 spatial_subset["geom_guid"] = geom_guid
+
+        # Geom is a list of guids
         elif isinstance(geom, list) and \
             all(len(geom[i]) == 36 for i in range(len(geom))):
             guid_list = []
             for i in range(len(geom)):
                 guid_list.append(geom[i])
             spatial_subset["geom_guid"] = guid_list
+
+        # Geom is a geodataframe to upload
+        elif isinstance(geom, gpd.GeoDataFrame):
+            geom_guid = self.upload_geometry(geom)
+            spatial_subset["geom_guid"] = geom_guid
+
+        # Geom is a set of clip coordinates in the form of a 2D ndarray
+        # or a np.matrix
+        elif isinstance(geom, np.ndarray) and geom.ndim == 2 and \
+                geom.shape[1] == 2:
+            def row_to_string(x):
+                out_str = "({},{})".format(*x)
+                return out_str
+            clip_str = ",".join(
+                np.apply_along_axis(row_to_string, axis=1, arr=geom))
+            if endpoint == "subset_polygon":
+                spatial_subset["clip"] = clip_str
+            else:
+                spatial_subset["points"] = clip_str
+
         else: 
             raise Exception("Geometry configuration not implemented")
         return(spatial_subset)
