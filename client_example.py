@@ -1,7 +1,7 @@
 '''
 This code presents several ways to download a subset of PRISM data using the pygcdl interface of the GCDL API.
 
-The first four API requests present four different ways to download the same subset of PRISM data, including two ways to specify the spatial data and two ways to specify the temporal data. The user can confirm that the data downloaded from each of the four API calls are equivalent.
+The first four API requests present four different ways to download the same subset of PRISM data, including two ways to specify the spatial data and two ways to specify the temporal data. The user can confirm that the data downloaded from each of the first four API calls are equivalent. The last API requests illustrates how to download point data.
 '''
 
 # First we import the necessary libraries
@@ -22,10 +22,15 @@ pygcdl_obj = pygcdl.PyGeoCDL()
 print(pygcdl_obj.list_datasets())
 print(pygcdl_obj.get_dataset_info("PRISM"))
 
-# We specify the spatial extend of our requests. We can either use a GUID (an 
-# identifier for uploaded geometries), or a set of clip coordinates. Here, we 
-# will show two different ways to create a GUID for a spatial object, and one 
-# way to specify clip coordinates
+'''
+We specify the spatial extend of our requests. We can either use a GUID (an 
+identifier for uploaded geometries), or a set of clip coordinates. Here, we 
+will show two different ways to create a GUID for a spatial object, and one 
+way to specify clip coordinates
+
+In each case, our spatial data represents the Jornada Experimental Range 
+in southern New Mexico. The file in sample_data/jer_bounds_sf.shp includes a polygon that covers the covering this region. The file sample_data/four_points.shp includes point data for the bounding box of this same region.
+'''
 
 # First, we create a GUID by creating a geopandas object, and uploading that 
 # object.
@@ -35,6 +40,9 @@ crs_jer = jer_bounds_sf.crs
 
 # Next, we will create a GUID by directly uploading the file. 
 guid1 = pygcdl_obj.upload_geometry("sample_data/jer_bounds_sf.shp")
+
+# Lastly, we will create a GUID for point data.
+guid2 = pygcdl_obj.upload_geometry("sample_data/four_points.shp")
 
 # Now, guid0 and guid1 both reference the same polygon information. This is just
 # done to illustrate the different ways to use the upload_geometry() function. 
@@ -68,8 +76,9 @@ output1 = Path("output1")
 output2 = Path("output2")
 output3 = Path("output3")
 output4 = Path("output4")
+output5 = Path("output5")
 
-output_dirs = [output1, output2, output3, output4]
+output_dirs = [output1, output2, output3, output4, output5]
 for out in output_dirs:
     if not out.is_dir():
         out.mkdir()
@@ -105,7 +114,7 @@ pygcdl_obj.download_polygon_subset(
     dsn=output3,
     )
 
-# Lastly, we can make a similar request by using the clipping coordinates data
+# For our last polygon subset request, we use the clipping coordinates data
 # instead of a GUID. Note that the spatial data here is slightly different from
 # the spatial extent of the previous requests since the coordinates refer to the
 # bounding box of the jer_bounds_sf polygon.
@@ -120,5 +129,17 @@ pygcdl_obj.download_polygon_subset(
     days=days, 
     t_geom=clip_coords,
     dsn=output4,
+    t_crs=crs_jer
+    )
+
+# Lastly, we request PRISM data for our point data.
+
+print("Request 5:")
+pygcdl_obj.download_points_subset(
+    prism_df,
+    years=years,
+    months=months,
+    days=days,
+    t_geom=guid2,
     t_crs=crs_jer
     )

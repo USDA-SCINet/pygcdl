@@ -67,15 +67,18 @@ class PyGeoCDL:
 
         # Case 2: geom is a geodataframe
         elif isinstance(geom, gpd.GeoDataFrame):
-            #Best case scenario: one single polygon
-            if (len(geom) == 1 and all(geom.geom_type == "Polygon")):
+            # Easy case: Either point data or a single polygon
+            if ((len(geom) == 1 and all(geom.geom_type == "Polygon")) or \
+                all(geom.geom_type == "Point")):
                 with tempfile.TemporaryDirectory() as t:
                     outpath = Path(t) / "upload.shp"
                     geom.to_file(outpath)
                     geom = self.upload_geometry(str(outpath))
                 return geom
 
-            else:
+            else: # Hard case: geom contains multiple polygons
+                # This could be either multiple rows of Polygons, or any number
+                # of MultiPolygons
                 geom_union = geom.unary_union
                 if geom_union.geom_type == "Polygon":
                     upload_gdf = gpd.GeoDataFrame(index=[0], crs = geom.crs, 
@@ -123,6 +126,44 @@ class PyGeoCDL:
     ):
 
         endpoint = 'subset_polygon'
+
+        q_str, param_dict = self._format_subset_query(
+            dsvars=dsvars, 
+            endpoint=endpoint,
+            dates=dates, 
+            years=years, 
+            months=months, 
+            days=days, 
+            t_crs=t_crs, 
+            resolution=resolution, 
+            t_geom=t_geom,
+            out_format=out_format, 
+            grain_method=grain_method,
+            validate_method=validate_method,
+            ri_method=ri_method)
+
+        out_files = self._submit_subset_query(q_str, param_dict, dsn, req_name)
+        return out_files
+
+    def download_points_subset(
+        self,
+        dsvars,
+        dates = None,
+        years = None,
+        months = None,
+        days = None,
+        t_crs = None, 
+        resolution = None,
+        t_geom = None,
+        out_format = 'csv',
+        grain_method = 'strict',
+        validate_method = 'strict',
+        ri_method = 'nearest',
+        dsn = '.',
+        req_name = None
+    ):
+
+        endpoint = 'subset_points'
 
         q_str, param_dict = self._format_subset_query(
             dsvars=dsvars, 
