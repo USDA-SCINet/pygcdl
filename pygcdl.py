@@ -1,38 +1,4 @@
 import requests
-<<<<<<< Updated upstream
-
-class PyGeoCDL:
-	def __init__(self, url_base=None):
-		if url_base is None:
-			self.url_base='http://127.0.0.1:8000'
-
-	def getDatasets(self):
-		"""
-		Retrieves the ID and name of all available GeoCDL datasets. The
-		dataset information is returned as a dictionary in which the dataset
-		IDs are the keys and the dataset names are the values.
-		"""
-		r = requests.get(self.url_base + '/list_datasets')
-
-		return {val['id']: val['name'] for val in r.json()}
-
-	def getDatasetInfo(self, dsid):
-		"""
-		Returns all metadata for the dataset with the given dataset ID. The
-		metadata are returned as a dictionary of key: value pairs.
-		"""
-
-		r = requests.get(self.url_base + '/ds_info', params={'id': dsid})
-
-		return r.json()
-
-	def uploadGeom(self, file):
-		headers = {"Content-Type": "multipart/form-data", "accept": "application/json"}
-		files = {"file": (file, open(file, 'rb'), 'application/geo+json', {'Expires': '0'})}
-		r = requests.post(self.url_base + '/upload_geom', headers = headers, files=files)
-		print(r.text)
-		return r.text
-=======
 import os
 from pathlib import Path
 import tempfile
@@ -387,7 +353,10 @@ class PyGeoCDL:
                 # Unzip subset_zip
                 with zipfile.ZipFile((str(subset_zip)), 'r') as f:
                     print("Files downloaded and unzipped: ", f.namelist())
-                    out_files.extend(f.namelist())
+                    file_names = f.namelist()
+                    # add output directory to file name
+                    file_names_out = [Path(dsn) / str(k) for k in f.namelist()]
+                    out_files.extend(file_names_out)
                     f.extractall(Path(dsn))
         return out_files
 
@@ -565,5 +534,3 @@ class PyGeoCDL:
         else:
             raise Exception("Unsupported geometry type for inferring GeoCDL subset endpoint. Please use download_[polygon|points]_subset() directly.")
 
-        
->>>>>>> Stashed changes
