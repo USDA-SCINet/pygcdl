@@ -307,7 +307,7 @@ class PyGeoCDL:
         if not Path(dsn).is_dir():
             raise Exception("Destination folder DNE")
 
-        # Create output directory
+        # Create output zip file path, based on time and date of creation
         if req_name is None:
             basename = "gcdl_subset"
             suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
@@ -355,7 +355,7 @@ class PyGeoCDL:
                     print("Files downloaded and unzipped: ", f.namelist())
                     file_names = f.namelist()
                     # add output directory to file name
-                    file_names_out = [Path(dsn) / str(k) for k in f.namelist()]
+                    file_names_out = [str(Path(dsn / k).as_posix()) for k in f.namelist()]
                     out_files.extend(file_names_out)
                     f.extractall(Path(dsn))
         return out_files
