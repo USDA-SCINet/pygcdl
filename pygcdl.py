@@ -314,6 +314,8 @@ class PyGeoCDL:
             output_dir = "_".join([basename, suffix])
         
         # Check to see if EITHER clip for geom_guid is provided.
+        # Set num_queries equal to the number of geometries.
+        # Request can have multiple geometries if user submitted a multipolygon
         GUID = False
         if "geom_guid" in param_dict.keys():
             GUID = True
@@ -331,11 +333,17 @@ class PyGeoCDL:
 
         out_files = []
         headers = {"accept": "application/json"}
+        # DEBUG:
+        print("num_queries: ", num_queries)
 
         for q in range(num_queries):
+            # DEBUG:
+            print("q: ", q)
             out = output_dir + "_" + str(q+1)
             subset_dir = Path(dsn) / Path(out)
             subset_zip = Path(str(subset_dir) + ".zip")
+            # DEBUG:
+            print("subset_zip: ", str(subset_zip))
             params = param_dict.copy()
             if GUID: # Iterate through possible list of GUIDs
                 req_spatial = param_dict["geom_guid"][q]
