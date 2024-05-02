@@ -15,7 +15,7 @@ class PyGeoCDL:
     def __init__(self, url_base=None):
         if url_base is None:
             # Address of the service node on Ceres
-            self.url_base = '10.1.1.80:8000'
+            self.url_base = 'http://10.1.1.80:8000'
         else:
             self.url_base = url_base
 
