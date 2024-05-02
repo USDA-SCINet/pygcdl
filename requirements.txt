@@ -1,0 +1,5 @@
+pandasi
+geopandas
+rioxarray
+requests
+matplotlib
