@@ -1,4 +1,4 @@
-pandasi
+pandas
 geopandas
 rioxarray
 requests
