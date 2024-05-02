@@ -336,17 +336,11 @@ class PyGeoCDL:
 
         out_files = []
         headers = {"accept": "application/json"}
-        # DEBUG:
-        print("num_queries: ", num_queries)
 
         for q in range(num_queries):
-            # DEBUG:
-            print("q: ", q)
             out = output_dir + "_" + str(q+1)
             subset_dir = Path(dsn) / Path(out)
             subset_zip = Path(str(subset_dir) + ".zip")
-            # DEBUG:
-            print("subset_zip: ", str(subset_zip))
             params = param_dict.copy()
             if GUID: # Iterate through possible list of GUIDs
                 req_spatial = param_dict["geom_guid"][q]
