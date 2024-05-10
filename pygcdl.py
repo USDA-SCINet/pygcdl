@@ -44,6 +44,10 @@ class PyGeoCDL:
         # REST API and returns a geometry upload ID to use
         # in subset requests.
 
+        # Case 0: geom is a pathlike object, convert to a file path string
+        if isinstance(geom, os.PathLike):
+            geom = str(geom)
+
         # Case 1: geom is a file
         if isinstance(geom, str):
             if not Path(geom).is_file():
@@ -53,6 +57,8 @@ class PyGeoCDL:
                 or file_ext == ".csv":
                 files = {"geom_file": (geom, open(geom, 'rb'))}
                 r = requests.post(self.url_base + '/upload_geom', files=files)
+                if not r.ok:
+                    raise Exception(r.json()["detail"])
                 response_dict = r.json()
                 return response_dict["geom_guid"]
 
@@ -64,6 +70,8 @@ class PyGeoCDL:
 
                 files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
                 r = requests.post(self.url_base + '/upload_geom', files=files)
+                if not r.ok:
+                    raise Exception(r.json()["detail"])
                 response_dict = r.json()
                 return response_dict["geom_guid"]
             else:
@@ -347,6 +355,8 @@ class PyGeoCDL:
                 params["geom_guid"] = req_spatial
             r = requests.get(query_str, params=params, headers=headers)
             print(r.url)
+            if not r.ok:
+                raise Exception(r.json()["detail"])
             if r.status_code >= 400:
                 print("Status_code: ", r.status_code)
                 print(r.text)
@@ -383,7 +393,7 @@ class PyGeoCDL:
                 new_file = file.with_suffix(suffix)
                 if not new_file.is_file():
                     raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), new_file)
-                z.write(new_file)
+                z.write(new_file, arcname=new_file.name)
 
         return(output_zip_dir)
 
