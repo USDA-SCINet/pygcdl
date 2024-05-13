@@ -58,7 +58,11 @@ class PyGeoCDL:
                 files = {"geom_file": (geom, open(geom, 'rb'))}
                 r = requests.post(self.url_base + '/upload_geom', files=files)
                 if not r.ok:
-                    raise Exception(r.json()["detail"])
+                    print(r.status_code)
+                    if 'application/json' in r.headers.get('Content-Type'):
+                        raise Exception(r.json()["detail"])
+                    else:
+                        raise Exception(r.text)
                 response_dict = r.json()
                 return response_dict["geom_guid"]
 
@@ -71,7 +75,11 @@ class PyGeoCDL:
                 files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
                 r = requests.post(self.url_base + '/upload_geom', files=files)
                 if not r.ok:
-                    raise Exception(r.json()["detail"])
+                    print(r.status_code)
+                    if 'application/json' in r.headers.get('Content-Type'):
+                        raise Exception(r.json()["detail"])
+                    else:
+                        raise Exception(r.text)
                 response_dict = r.json()
                 return response_dict["geom_guid"]
             else:
@@ -356,10 +364,11 @@ class PyGeoCDL:
             r = requests.get(query_str, params=params, headers=headers)
             print(r.url)
             if not r.ok:
-                raise Exception(r.json()["detail"])
-            if r.status_code >= 400:
                 print("Status_code: ", r.status_code)
-                print(r.text)
+                if 'application/json' in r.headers.get('Content-Type'):
+                    raise Exception(r.json()["detail"])
+                else:
+                    raise Exception(r.text)
             else:
                 # Write contents to zip file in chunks
                 with open(subset_zip, 'wb') as f:
@@ -417,8 +426,9 @@ class PyGeoCDL:
             dsvars_out = pd.DataFrame(columns=["dataset", "variable"])
             for dataset, var_list in dsvars.items():
                 for var in var_list:
-                    dsvars_out.loc[len(dsvars.index)] = [dataset, var]
+                    dsvars_out.loc[len(dsvars_out.index)] = [dataset, var]
             dsvars = dsvars_out
+            print("dsvars_out: ", dsvars_out)
         else:
             raise Exception("Dataset variables format not accepted")
 
