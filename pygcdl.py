@@ -414,10 +414,11 @@ class PyGeoCDL:
             dsvars = pd.DataFrame(dsvars, columns=["dataset", "variable"])
             dsvars = dsvars.iloc[:,0:2]
         elif isinstance(dsvars, dict):
-            dsvars = pd.DataFrame(columns=["dataset", "variable"])
+            dsvars_out = pd.DataFrame(columns=["dataset", "variable"])
             for dataset, var_list in dsvars.items():
                 for var in var_list:
-                    dsvars.loc[len(dsvars.index)] = [dataset, var]
+                    dsvars_out.loc[len(dsvars.index)] = [dataset, var]
+            dsvars = dsvars_out
         else:
             raise Exception("Dataset variables format not accepted")
 
