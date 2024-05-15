@@ -326,6 +326,8 @@ class PyGeoCDL:
         if not Path(dsn).is_dir():
             raise Exception("Destination folder DNE")
 
+        dsn = Path(dsn)
+
         # Create output zip file path, based on time and date of creation
         if req_name is None:
             basename = "gcdl_subset"
@@ -362,7 +364,7 @@ class PyGeoCDL:
                 req_spatial = param_dict["geom_guid"][q]
                 params["geom_guid"] = req_spatial
             r = requests.get(query_str, params=params, headers=headers)
-            print(r.url)
+            # print(r.url)
             if not r.ok:
                 print("Status_code: ", r.status_code)
                 if 'application/json' in r.headers.get('Content-Type'):
@@ -376,10 +378,10 @@ class PyGeoCDL:
                         f.write(chunk)
                 # Unzip subset_zip
                 with zipfile.ZipFile((str(subset_zip)), 'r') as f:
-                    print("Files downloaded and unzipped: ", f.namelist())
+                    # print("Files downloaded and unzipped: ", f.namelist())
                     file_names = f.namelist()
                     # add output directory to file name
-                    file_names_out = [str(Path(dsn / k).as_posix()) for k in f.namelist()]
+                    file_names_out = [str(Path(dsn / k)) for k in f.namelist()]
                     out_files.extend(file_names_out)
                     f.extractall(Path(dsn))
         return out_files
