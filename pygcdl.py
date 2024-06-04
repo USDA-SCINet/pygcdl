@@ -44,6 +44,10 @@ class PyGeoCDL:
         # REST API and returns a geometry upload ID to use
         # in subset requests.
 
+        # Case 0: geom is a pathlike object, convert to a file path string
+        if isinstance(geom, os.PathLike):
+            geom = str(geom)
+
         # Case 1: geom is a file
         if isinstance(geom, str):
             if not Path(geom).is_file():
@@ -53,6 +57,12 @@ class PyGeoCDL:
                 or file_ext == ".csv":
                 files = {"geom_file": (geom, open(geom, 'rb'))}
                 r = requests.post(self.url_base + '/upload_geom', files=files)
+                if not r.ok:
+                    print(r.status_code)
+                    if 'application/json' in r.headers.get('Content-Type'):
+                        raise Exception(r.json()["detail"])
+                    else:
+                        raise Exception(r.text)
                 response_dict = r.json()
                 return response_dict["geom_guid"]
 
@@ -64,6 +74,12 @@ class PyGeoCDL:
 
                 files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
                 r = requests.post(self.url_base + '/upload_geom', files=files)
+                if not r.ok:
+                    print(r.status_code)
+                    if 'application/json' in r.headers.get('Content-Type'):
+                        raise Exception(r.json()["detail"])
+                    else:
+                        raise Exception(r.text)
                 response_dict = r.json()
                 return response_dict["geom_guid"]
             else:
@@ -310,6 +326,8 @@ class PyGeoCDL:
         if not Path(dsn).is_dir():
             raise Exception("Destination folder DNE")
 
+        dsn = Path(dsn)
+
         # Create output zip file path, based on time and date of creation
         if req_name is None:
             basename = "gcdl_subset"
@@ -347,9 +365,12 @@ class PyGeoCDL:
                 params["geom_guid"] = req_spatial
             r = requests.get(query_str, params=params, headers=headers)
             print(r.url)
-            if r.status_code >= 400:
+            if not r.ok:
                 print("Status_code: ", r.status_code)
-                print(r.text)
+                if 'application/json' in r.headers.get('Content-Type'):
+                    raise Exception(r.json()["detail"])
+                else:
+                    raise Exception(r.text)
             else:
                 # Write contents to zip file in chunks
                 with open(subset_zip, 'wb') as f:
@@ -360,7 +381,7 @@ class PyGeoCDL:
                     print("Files downloaded and unzipped: ", f.namelist())
                     file_names = f.namelist()
                     # add output directory to file name
-                    file_names_out = [str(Path(dsn / k).as_posix()) for k in f.namelist()]
+                    file_names_out = [str(Path(dsn / k)) for k in f.namelist()]
                     out_files.extend(file_names_out)
                     f.extractall(Path(dsn))
         return out_files
@@ -383,7 +404,7 @@ class PyGeoCDL:
                 new_file = file.with_suffix(suffix)
                 if not new_file.is_file():
                     raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), new_file)
-                z.write(new_file)
+                z.write(new_file, arcname=new_file.name)
 
         return(output_zip_dir)
 
@@ -404,10 +425,11 @@ class PyGeoCDL:
             dsvars = pd.DataFrame(dsvars, columns=["dataset", "variable"])
             dsvars = dsvars.iloc[:,0:2]
         elif isinstance(dsvars, dict):
-            dsvars = pd.DataFrame(columns=["dataset", "variable"])
+            dsvars_out = pd.DataFrame(columns=["dataset", "variable"])
             for dataset, var_list in dsvars.items():
                 for var in var_list:
-                    dsvars.loc[len(dsvars.index)] = [dataset, var]
+                    dsvars_out.loc[len(dsvars_out.index)] = [dataset, var]
+            dsvars = dsvars_out
         else:
             raise Exception("Dataset variables format not accepted")
 
