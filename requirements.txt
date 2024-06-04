@@ -3,4 +3,3 @@ geopandas
 rioxarray
 requests
 matplotlib
-ipykernel
