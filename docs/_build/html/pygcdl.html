@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pygcdl package &mdash; pygcdl 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pygcdl" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pygcdl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pygcdl</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pygcdl package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-pygcdl">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pygcdl.PyGeoCDL"><code class="docutils literal notranslate"><span class="pre">PyGeoCDL</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pygcdl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pygcdl</a></li>
+      <li class="breadcrumb-item active">pygcdl package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pygcdl.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pygcdl-package">
+<h1>pygcdl package<a class="headerlink" href="#pygcdl-package" title="Link to this heading"></a></h1>
+<section id="module-pygcdl">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygcdl" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pygcdl.PyGeoCDL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pygcdl.</span></span><span class="sig-name descname"><span class="pre">PyGeoCDL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygcdl.html#PyGeoCDL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygcdl.PyGeoCDL" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object used to interact with GeoCDL through python</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url_base</strong> (<em>Optional</em><em>(</em><em>str</em><em>)</em>) -- IP address of the server hosting the GeoCDL. Defaults to url of Ceres service node.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pygcdl.PyGeoCDL.download_points_subset">
+<span class="sig-name descname"><span class="pre">download_points_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsvars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">months</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_geom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">GeoDataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grain_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'strict'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'strict'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ri_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'nearest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">req_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygcdl.html#PyGeoCDL.download_points_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygcdl.PyGeoCDL.download_points_subset" title="Link to this definition"></a></dt>
+<dd><p>Download point-based data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dsvars</strong> (<em>Union</em><em>[</em><em>pandas.DataFrame</em><em>, </em><em>numpy.ndarray</em><em>, </em><em>list</em><em>, </em><em>dict</em><em>]</em>) -- The GeoCDL dataset and variable IDs requested. Use <cite>list_datasets()</cite> and <cite>get_dataset_info()</cite> to see available datasets and variables. If specified as a <cite>pandas.DataFrame</cite> or a <cite>numpy.ndarray</cite>, then list one row per variable with the first column representing the dataset ID and the second column representing the variable ID. If specified as a list, each element must be a list itself containing the dataset ID, followed by the variable ID. If specified as a dict, then list each dataset ID is a key linking to a list of variable IDs.</p></li>
+<li><p><strong>dates</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>]</em><em>]</em>) -- List of dates requested.
+Each individual date is specified as a string. Ranges of dates can be specified with a colon, for example &quot;2000-01-01:2000-01-31&quot;. User can specify multiple dates or multiple date ranges either by separating with a comma, or putting each individual date or range in a list. For example, &quot;2000-01-01,2000-01-02&quot; and [&quot;2000-01-01&quot;, &quot;2000-01-02&quot;] are equivalent.</p></li>
+<li><p><strong>years</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of years requested.
+Individual years and year ranges and year ranges are comma separated. For example, &quot;2000,2005:2008&quot;. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>months</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of months requested.
+Individual months and month ranges are comma separated. Each month is applied to each year. For example, if <cite>years=&quot;2000:2001&quot;</cite>, and <cite>months=&quot;7:8&quot;</cite>, then the user is requesting July and August of 2000 and 2001. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>days</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of days requested.
+Individual days and day ranges are comma separated. If <cite>months</cite> is specified, then <cite>days</cite> represents the day of the month. If <cite>months</cite> is not specified, then <cite>days</cite> represents the days of the year. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>t_crs</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Target CRS.
+Also used as the crs of the uploaded geometry if no geographic metadata is included in geometry (ie if user uploads a geojson file).</p></li>
+<li><p><strong>t_geom</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>geopandas.GeoDataFrame</em><em>]</em><em>]</em>) -- The points geometry of interest, specified as either a Geometry Upload ID (GUID), and list of GUIDs, or a geopandas.GeoDataFrame. If t_geom is not set, GeoCDL returns the entire spatial extent of the dataset.</p></li>
+<li><p><strong>out_format</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Desired format of output files.
+Choose from &quot;csv&quot;, &quot;shapefile&quot; or &quot;netcdf&quot;. Default value is &quot;csv&quot;.</p></li>
+<li><p><strong>grain_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- <p>If not all datasets you request have the same temporal grain, e.g. you request monthly data but one dataset only has daily data or only has annual data, you can specify <cite>grain_method</cite> to choose an alternative temporal grain. Default is &quot;strict&quot;. Options include:</p>
+<blockquote>
+<div><ul>
+<li><p><strong>&quot;strict&quot;</strong>: User will only accept the requested date grain. If date grain is not available, GCDL will throw an error.</p></li>
+<li><p><strong>&quot;skip&quot;</strong>: If date grain is not available, do not return data for that dataset and variable. Will not throw an error.</p></li>
+<li><p><strong>&quot;finer&quot;</strong>: User will accept the requested date grain, or a finer date grain. Finer grains attempted in order from largest to smallest. Ex: if user requests annual date grain and the finer grain method, and annual data is not available, GCDL will first see if monthly data is available, and if not will then try daily data.</p></li>
+<li><p><strong>&quot;coarser&quot;</strong>: User will accept the requested date grain, or a coarser date grain. Coarser grains attempted in order from smallest to largest.</p></li>
+<li><p><strong>&quot;any&quot;</strong>: User will accept any alternative date grain. Alternative grains are attempted from largest to smallest.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>validate_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- How to handle requested dates outside of requested dataset available data range. If &quot;strict&quot; (default), an error will be returned. If &quot;overlap&quot;, the requested dates will be truncated to the date range available in all requested datasets. If &quot;all&quot;, then the requested dates will be truncated to the available date range per dataset. Non-temporal datasets are always returned.</p></li>
+<li><p><strong>ri_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Resampling or interpolation method used for reprojection. Resampling methods apply to polygon requests, and interpolation methods apply to point requests. Resampling method options include &quot;nearest&quot;, &quot;bilinear&quot;, &quot;cubic&quot;, &quot;cubic-spline&quot;, &quot;lanczos&quot;, &quot;average&quot;, or &quot;mode&quot;. Interpolation method options include &quot;nearest&quot; and &quot;linear&quot;. Default is &quot;nearest&quot;. Only used if target CRS and/or spatial resolution are provided, otherwise data is returned in the CRS of the dataset and no reprojection is needed. If two methods are provided (comma separated, e.g. &quot;bilinear,nearest&quot;), the first will be used for continuous variables and the second will be used for categorical variables. An error will be returned when methods requested for categorical variables are not applicable.</p></li>
+<li><p><strong>dsn</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>os.PathLike</em><em>]</em><em>]</em>) -- Destination for downloaded files. Default is current working directory.</p></li>
+<li><p><strong>req_name</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- The request name. Used to name the folder containing the downloaded data. If not set, the output directory is named &quot;gcdl_subset&quot; plus a timestamp of the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of downloaded filenames.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygcdl.PyGeoCDL.download_polygon_subset">
+<span class="sig-name descname"><span class="pre">download_polygon_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsvars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">months</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_crs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_geom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">GeoDataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'geotiff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grain_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'strict'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'strict'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ri_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'nearest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">req_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygcdl.html#PyGeoCDL.download_polygon_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygcdl.PyGeoCDL.download_polygon_subset" title="Link to this definition"></a></dt>
+<dd><p>Download raster data clipped to polygon boundaries</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dsvars</strong> (<em>Union</em><em>[</em><em>pandas.DataFrame</em><em>, </em><em>numpy.ndarray</em><em>, </em><em>list</em><em>, </em><em>dict</em><em>]</em>) -- The GeoCDL dataset and variable IDs requested. Use <cite>list_datasets()</cite> and <cite>get_dataset_info()</cite> to see available datasets and variables. If specified as a <cite>pandas.DataFrame</cite> or a <cite>numpy.ndarray</cite>, then list one row per variable with the first column representing the dataset ID and the second column representing the variable ID. If specified as a list, each element must be a list itself containing the dataset ID, followed by the variable ID. If specified as a dict, then list each dataset ID is a key linking to a list of variable IDs.</p></li>
+<li><p><strong>dates</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>]</em><em>]</em>) -- List of dates requested.
+Each individual date is specified as a string. Ranges of dates can be specified with a colon, for example &quot;2000-01-01:2000-01-31&quot;. User can specify multiple dates or multiple date ranges either by separating with a comma, or putting each individual date or range in a list. For example, &quot;2000-01-01,2000-01-02&quot; and [&quot;2000-01-01&quot;, &quot;2000-01-02&quot;] are equivalent.</p></li>
+<li><p><strong>years</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of years requested.
+Can include year ranges. Individual years or year ranges are comma separated. For example, &quot;2000,2005:2008&quot;. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>months</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of months requested.
+Individual months and month ranges are comma separated. Each month is applied to each year. For example, if <cite>years=&quot;2000:2001&quot;</cite>, and <cite>months=&quot;7:8&quot;</cite>, then the user is requesting July and August of 2000 and 2001. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>days</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of days requested.
+Individual days and day ranges are comma separated. If <cite>months</cite> is specified, then <cite>days</cite> represents the day of the month. If <cite>months</cite> is not specified, then <cite>days</cite> represents the days of the year. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>t_crs</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Target CRS.
+Also used as the crs of the uploaded geometry if no geographic metadata is included in geometry (ie if user uploads clipping coordinates or a geojson file).</p></li>
+<li><p><strong>resolution</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Desired output resolution in units of the output CRS.</p></li>
+<li><p><strong>t_geom</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>geopandas.GeoDataFrame</em><em>, </em><em>numpy.ndarray</em><em>]</em><em>]</em>) -- The polygon of interest, specified as either a Geometry Upload ID (GUID), and list of GUIDs, a geopandas.GeoDataFrame, or a numpy.ndarray specifying x and y coordinates of a clipping polygon. If only two clipping coordinates are provided, then they are assumed to be opposite corners of a bounding box. Clipping coordinates are assumed to be in the crs specified by <cite>t_crs</cite> if specified, and if not, are assumed to be in the crs of the first requested dataset. If t_geom is not set, GeoCDL returns the entire spatial extent of the dataset.</p></li>
+<li><p><strong>out_format</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Desired format of output files.
+Choose from &quot;geotiff&quot; or &quot;netcdf&quot;. Default value is &quot;geotiff&quot;.</p></li>
+<li><p><strong>grain_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- <p>If not all datasets you request have the same temporal grain, e.g. you request monthly data but one dataset only has daily data or only has annual data, you can specify <cite>grain_method</cite> to choose an alternative temporal grain. Default is &quot;strict&quot;. Options include:</p>
+<blockquote>
+<div><ul>
+<li><p><strong>&quot;strict&quot;</strong>: User will only accept the requested date grain. If date grain is not available, GCDL will throw an error.</p></li>
+<li><p><strong>&quot;skip&quot;</strong>: If date grain is not available, do not return data for that dataset and variable. Will not throw an error.</p></li>
+<li><p><strong>&quot;finer&quot;</strong>: User will accept the requested date grain, or a finer date grain. Finer grains attempted in order from largest to smallest. Ex: if user requests annual date grain and the finer grain method, and annual data is not available, GCDL will first see if monthly data is available, and if not will then try daily data.</p></li>
+<li><p><strong>&quot;coarser&quot;</strong>: User will accept the requested date grain, or a coarser date grain. Coarser grains attempted in order from smallest to largest.</p></li>
+<li><p><strong>&quot;any&quot;</strong>: User will accept any alternative date grain. Alternative grains are attempted from largest to smallest.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>validate_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- How to handle requested dates outside of requested dataset available data range. If &quot;strict&quot; (default), an error will be returned. If &quot;overlap&quot;, the requested dates will be truncated to the date range available in all requested datasets. If &quot;all&quot;, then the requested dates will be truncated to the available date range per dataset. Non-temporal datasets are always returned.</p></li>
+<li><p><strong>ri_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Resampling or interpolation method used for reprojection. Resampling methods apply to polygon requests, and interpolation methods apply to point requests. Resampling method options include &quot;nearest&quot;, &quot;bilinear&quot;, &quot;cubic&quot;, &quot;cubic-spline&quot;, &quot;lanczos&quot;, &quot;average&quot;, or &quot;mode&quot;. Interpolation method options include &quot;nearest&quot; and &quot;linear&quot;. Default is &quot;nearest&quot;. Only used if target CRS and/or spatial resolution are provided, otherwise data is returned in the CRS of the dataset and no reprojection is needed. If two methods are provided (comma separated, e.g. &quot;bilinear,nearest&quot;), the first will be used for continuous variables and the second will be used for categorical variables. An error will be returned when methods requested for categorical variables are not applicable.</p></li>
+<li><p><strong>dsn</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>os.PathLike</em><em>]</em><em>]</em>) -- Destination for downloaded files. Default is current working directory.</p></li>
+<li><p><strong>req_name</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- The request name. Used to name the folder containing the downloaded data. If not set, the output directory is named &quot;gcdl_subset&quot; plus a timestamp of the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of downloaded filenames.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygcdl.PyGeoCDL.download_subset">
+<span class="sig-name descname"><span class="pre">download_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsvars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">months</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">days</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_crs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_geom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grain_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'strict'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'strict'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ri_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nearest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">req_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygcdl.html#PyGeoCDL.download_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygcdl.PyGeoCDL.download_subset" title="Link to this definition"></a></dt>
+<dd><p>Download point or raster data depending on inferred geometry type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dsvars</strong> (<em>Union</em><em>[</em><em>pandas.DataFrame</em><em>, </em><em>numpy.ndarray</em><em>, </em><em>list</em><em>, </em><em>dict</em><em>]</em>) -- The GeoCDL dataset and variable IDs requested. Use <cite>list_datasets()</cite> and <cite>get_dataset_info()</cite> to see available datasets and variables. If specified as a <cite>pandas.DataFrame</cite> or a <cite>numpy.ndarray</cite>, then list one row per variable with the first column representing the dataset ID and the second column representing the variable ID. If specified as a list, each element must be a list itself containing the dataset ID, followed by the variable ID. If specified as a dict, then list each dataset ID is a key linking to a list of variable IDs.</p></li>
+<li><p><strong>dates</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>str</em><em>]</em><em>]</em>) -- List of dates requested.
+Each individual date is specified as a string. Ranges of dates can be specified with a colon, for example &quot;2000-01-01:2000-01-31&quot;. User can specify multiple dates or multiple date ranges either by separating with a comma, or putting each individual date or range in a list. For example, &quot;2000-01-01,2000-01-02&quot; and [&quot;2000-01-01&quot;, &quot;2000-01-02&quot;] are equivalent.</p></li>
+<li><p><strong>years</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of years requested.
+Can include year ranges. Individual years or year ranges are comma separated. For example, &quot;2000,2005:2008&quot;. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>months</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of months requested.
+Individual months and month ranges are comma separated. Each month is applied to each year. For example, if <cite>years=&quot;2000:2001&quot;</cite>, and <cite>months=&quot;7:8&quot;</cite>, then the user is requesting July and August of 2000 and 2001. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>days</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- List of days requested.
+Individual days and day ranges are comma separated. If <cite>months</cite> is specified, then <cite>days</cite> represents the day of the month. If <cite>months</cite> is not specified, then <cite>days</cite> represents the days of the year. Ignored if <cite>dates</cite> is specified.</p></li>
+<li><p><strong>t_crs</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Target CRS.
+Also used as the crs of the uploaded geometry if no geographic metadata is included in geometry (ie if user uploads clipping coordinates or a geojson file).</p></li>
+<li><p><strong>resolution</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Desired output resolution in units of the output CRS. Ignored for point data.</p></li>
+<li><p><strong>t_geom</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>geopandas.GeoDataFrame</em><em>, </em><em>numpy.ndarray</em><em>]</em><em>]</em>) -- The polygon of interest, specified as either a Geometry Upload ID (GUID), and list of GUIDs, a geopandas.GeoDataFrame, or a numpy.ndarray specifying x and y coordinates of a clipping polygon. If only two clipping coordinates are provided, then they are assumed to be opposite corners of a bounding box. Clipping coordinates are assumed to be in the crs specified by <cite>t_crs</cite> if specified, and if not, are assumed to be in the crs of the first requested dataset. If t_geom is not set, GeoCDL returns the entire spatial extent of the dataset.</p></li>
+<li><p><strong>out_format</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Desired format of output files.
+For polygon data, choose between &quot;geotiff&quot; (default) or &quot;netcdf&quot;. For point data, choose between &quot;csv&quot; (default), &quot;shapefile&quot;, or &quot;netcdf&quot;.</p></li>
+<li><p><strong>grain_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- <p>If not all datasets you request have the same temporal grain, e.g. you request monthly data but one dataset only has daily data or only has annual data, you can specify <cite>grain_method</cite> to choose an alternative temporal grain. Default is &quot;strict&quot;. Options include:</p>
+<blockquote>
+<div><ul>
+<li><p><strong>&quot;strict&quot;</strong>: User will only accept the requested date grain. If date grain is not available, GCDL will throw an error.</p></li>
+<li><p><strong>&quot;skip&quot;</strong>: If date grain is not available, do not return data for that dataset and variable. Will not throw an error.</p></li>
+<li><p><strong>&quot;finer&quot;</strong>: User will accept the requested date grain, or a finer date grain. Finer grains attempted in order from largest to smallest. Ex: if user requests annual date grain and the finer grain method, and annual data is not available, GCDL will first see if monthly data is available, and if not will then try daily data.</p></li>
+<li><p><strong>&quot;coarser&quot;</strong>: User will accept the requested date grain, or a coarser date grain. Coarser grains attempted in order from smallest to largest.</p></li>
+<li><p><strong>&quot;any&quot;</strong>: User will accept any alternative date grain. Alternative grains are attempted from largest to smallest.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>validate_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- How to handle requested dates outside of requested dataset available data range. If &quot;strict&quot; (default), an error will be returned. If &quot;overlap&quot;, the requested dates will be truncated to the date range available in all requested datasets. If &quot;all&quot;, then the requested dates will be truncated to the available date range per dataset. Non-temporal datasets are always returned.</p></li>
+<li><p><strong>ri_method</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- Resampling or interpolation method used for reprojection. Resampling methods apply to polygon requests, and interpolation methods apply to point requests. Resampling method options include &quot;nearest&quot;, &quot;bilinear&quot;, &quot;cubic&quot;, &quot;cubic-spline&quot;, &quot;lanczos&quot;, &quot;average&quot;, or &quot;mode&quot;. Interpolation method options include &quot;nearest&quot; and &quot;linear&quot;. Default is &quot;nearest&quot;. Only used if target CRS and/or spatial resolution are provided, otherwise data is returned in the CRS of the dataset and no reprojection is needed. If two methods are provided (comma separated, e.g. &quot;bilinear,nearest&quot;), the first will be used for continuous variables and the second will be used for categorical variables. An error will be returned when methods requested for categorical variables are not applicable.</p></li>
+<li><p><strong>dsn</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>os.PathLike</em><em>]</em><em>]</em>) -- Destination for downloaded files. Default is current working directory.</p></li>
+<li><p><strong>req_name</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) -- The request name. Used to name the folder containing the downloaded data. If not set, the output directory is named &quot;gcdl_subset&quot; plus a timestamp of the request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of downloaded filenames.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygcdl.PyGeoCDL.get_dataset_info">
+<span class="sig-name descname"><span class="pre">get_dataset_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dsid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygcdl.html#PyGeoCDL.get_dataset_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygcdl.PyGeoCDL.get_dataset_info" title="Link to this definition"></a></dt>
+<dd><p>Returns all metadata for the dataset with the given dataset ID. The
+metadata are returned as a dictionary of key: value pairs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygcdl.PyGeoCDL.list_datasets">
+<span class="sig-name descname"><span class="pre">list_datasets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygcdl.html#PyGeoCDL.list_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygcdl.PyGeoCDL.list_datasets" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the ID and name of all available GeoCDL datasets. The
+dataset information is returned as a dictionary in which the dataset
+IDs are the keys and the dataset names are the values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pygcdl.PyGeoCDL.upload_geometry">
+<span class="sig-name descname"><span class="pre">upload_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PathLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygcdl.html#PyGeoCDL.upload_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pygcdl.PyGeoCDL.upload_geometry" title="Link to this definition"></a></dt>
+<dd><p>Uploads a user geometry to the GeoCDL REST API and returns a
+geometry upload ID to use in subset requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geom</strong> (<em>Union</em><em>[</em><em>os.PathLike</em><em>, </em><em>str</em><em>, </em><em>geopandas.GeoDataFrame</em><em>]</em>) -- Geometry to
+upload</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A Geometry Upload ID (GUID), or list of GUIDs to</dt><dd><p>use in subsequent requests</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[str, list]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="pygcdl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Noa Mills.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

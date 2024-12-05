@@ -10,13 +10,22 @@ import geopandas as gpd
 import shapely
 import datetime
 import errno
+from typing import Union, Optional
 
 class PyGeoCDL:
-    def __init__(self, url_base=None):
+    """Object used to interact with GeoCDL through python
+    
+    Args:
+        url_base (Optional(str)): IP address of the server hosting the GeoCDL. Defaults to url of Ceres service node.
+    """
+
+    def __init__(self, url_base: str=None):
         if url_base is None:
-            # Address of the service node on Ceres
             self.url_base = 'http://10.1.1.80:8000'
         else:
+            # Remove trailing '/' if present
+            if url_base[-1] == "/":
+                url_base = url_base[0:-1]
             self.url_base = url_base
 
     def list_datasets(self):
@@ -29,20 +38,34 @@ class PyGeoCDL:
 
         return {val['id']: val['name'] for val in r.json()}
 
-    def get_dataset_info(self, dsid):
+    def get_dataset_info(self, dsid:str):
         """
         Returns all metadata for the dataset with the given dataset ID. The
         metadata are returned as a dictionary of key: value pairs.
         """
 
         r = requests.get(self.url_base + '/ds_info', params={'id': dsid})
-
+        print(r.url)
+        print(r.json())
         return r.json()
 
-    def upload_geometry(self, geom):
-        # This function uploads a user geometry to the GeoCDL
-        # REST API and returns a geometry upload ID to use
-        # in subset requests.
+    def upload_geometry(self, geom:Union[os.PathLike, str, gpd.GeoDataFrame]):
+        """
+        Uploads a user geometry to the GeoCDL REST API and returns a 
+        geometry upload ID to use in subset requests.
+        
+        Args:
+            geom (Union[os.PathLike, str, geopandas.GeoDataFrame]): Geometry to 
+                upload
+
+        Returns: 
+            Union[str, list]: A Geometry Upload ID (GUID), or list of GUIDs to 
+                use in subsequent requests
+        """
+
+        # Case 0: geom is a pathlike object, convert to a file path string
+        if isinstance(geom, os.PathLike):
+            geom = str(geom)
 
         # Case 1: geom is a file
         if isinstance(geom, str):
@@ -53,6 +76,11 @@ class PyGeoCDL:
                 or file_ext == ".csv":
                 files = {"geom_file": (geom, open(geom, 'rb'))}
                 r = requests.post(self.url_base + '/upload_geom', files=files)
+                if not r.ok:
+                    if 'application/json' in r.headers.get('Content-Type'):
+                        raise Exception(r.json()["detail"])
+                    else:
+                        raise Exception(r.text)
                 response_dict = r.json()
                 return response_dict["geom_guid"]
 
@@ -64,6 +92,12 @@ class PyGeoCDL:
 
                 files = {"geom_file": (zip_file_path, open(zip_file_path, 'rb'))}
                 r = requests.post(self.url_base + '/upload_geom', files=files)
+                if not r.ok:
+                    print(r.status_code)
+                    if 'application/json' in r.headers.get('Content-Type'):
+                        raise Exception(r.json()["detail"])
+                    else:
+                        raise Exception(r.text)
                 response_dict = r.json()
                 return response_dict["geom_guid"]
             else:
@@ -113,21 +147,64 @@ class PyGeoCDL:
 
     def download_polygon_subset(
         self,
-        dsvars,
-        dates = None,
-        years = None,
-        months = None,
-        days = None,
-        t_crs = None, 
-        resolution = None,
-        t_geom = None,
-        out_format = 'geotiff',
-        grain_method = 'strict',
-        validate_method = 'strict',
-        ri_method = 'nearest',
-        dsn = '.',
-        req_name = None
+        dsvars: Union[pd.DataFrame, np.ndarray, list, dict],
+        dates: Optional[Union[list[str], str]] = None,
+        years: Optional[Union[list[str], str]] = None,
+        months:  Optional[Union[list[str], str]] = None,
+        days: Optional[Union[list[str], str]] = None,
+        t_crs: Optional[str] = None, 
+        resolution: Optional[float] = None,
+        t_geom: Optional[Union[str, list[str], gpd.GeoDataFrame, np.ndarray]] = None,
+        out_format: str = 'geotiff',
+        grain_method: str = 'strict',
+        validate_method: str = 'strict',
+        ri_method: str = 'nearest',
+        dsn: Union[str, os.PathLike] = '.',
+        req_name: str = None
     ):
+        """Download raster data clipped to polygon boundaries
+
+        Args:
+            dsvars (Union[pandas.DataFrame, numpy.ndarray, list, dict]):    
+                The GeoCDL dataset and variable IDs requested. Use `list_datasets()` and `get_dataset_info()` to see available datasets and variables. If specified as a `pandas.DataFrame` or a `numpy.ndarray`, then list one row per variable with the first column representing the dataset ID and the second column representing the variable ID. If specified as a list, each element must be a list itself containing the dataset ID, followed by the variable ID. If specified as a dict, then list each dataset ID is a key linking to a list of variable IDs.
+            dates (Optional[Union[list[str], str]]): List of dates requested.
+                Each individual date is specified as a string. Ranges of dates can be specified with a colon, for example "2000-01-01:2000-01-31". User can specify multiple dates or multiple date ranges either by separating with a comma, or putting each individual date or range in a list. For example, "2000-01-01,2000-01-02" and ["2000-01-01", "2000-01-02"] are equivalent.
+            years (Optional[str]): List of years requested. 
+                Can include year ranges. Individual years or year ranges are comma separated. For example, "2000,2005:2008". Ignored if `dates` is specified.
+            months (Optional[str]): List of months requested. 
+                Individual months and month ranges are comma separated. Each month is applied to each year. For example, if `years="2000:2001"`, and `months="7:8"`, then the user is requesting July and August of 2000 and 2001. Ignored if `dates` is specified.
+            days (Optional[str]): List of days requested. 
+                Individual days and day ranges are comma separated. If `months` is specified, then `days` represents the day of the month. If `months` is not specified, then `days` represents the days of the year. Ignored if `dates` is specified.
+            t_crs (Optional[str]): Target CRS. 
+                Also used as the crs of the uploaded geometry if no geographic metadata is included in geometry (ie if user uploads clipping coordinates or a geojson file).
+            resolution (Optional[str]): 
+                Desired output resolution in units of the output CRS.
+            t_geom (Optional[Union[str, list[str], geopandas.GeoDataFrame, numpy.ndarray]]):
+                The polygon of interest, specified as either a Geometry Upload ID (GUID), and list of GUIDs, a geopandas.GeoDataFrame, or a numpy.ndarray specifying x and y coordinates of a clipping polygon. If only two clipping coordinates are provided, then they are assumed to be opposite corners of a bounding box. Clipping coordinates are assumed to be in the crs specified by `t_crs` if specified, and if not, are assumed to be in the crs of the first requested dataset. If t_geom is not set, GeoCDL returns the entire spatial extent of the dataset.
+            out_format (Optional[str]): Desired format of output files.
+                Choose from "geotiff" or "netcdf". Default value is "geotiff".
+            grain_method (Optional[str]):
+                If not all datasets you request have the same temporal grain, e.g. you request monthly data but one dataset only has daily data or only has annual data, you can specify `grain_method` to choose an alternative temporal grain. Default is "strict". Options include: 
+
+                    * **"strict"**: User will only accept the requested date grain. If date grain is not available, GCDL will throw an error. 
+                    * **"skip"**: If date grain is not available, do not return data for that dataset and variable. Will not throw an error. 
+                    * **"finer"**: User will accept the requested date grain, or a finer date grain. Finer grains attempted in order from largest to smallest. Ex: if user requests annual date grain and the finer grain method, and annual data is not available, GCDL will first see if monthly data is available, and if not will then try daily data. 
+                    * **"coarser"**: User will accept the requested date grain, or a coarser date grain. Coarser grains attempted in order from smallest to largest. 
+                    * **"any"**: User will accept any alternative date grain. Alternative grains are attempted from largest to smallest.
+            validate_method (Optional[str]):
+                How to handle requested dates outside of requested dataset available data range. If "strict" (default), an error will be returned. If "overlap", the requested dates will be truncated to the date range available in all requested datasets. If "all", then the requested dates will be truncated to the available date range per dataset. Non-temporal datasets are always returned.
+            ri_method (Optional[str]):
+                Resampling or interpolation method used for reprojection. Resampling methods apply to polygon requests, and interpolation methods apply to point requests. Resampling method options include "nearest", "bilinear", "cubic", "cubic-spline", "lanczos", "average", or "mode". Interpolation method options include "nearest" and "linear". Default is "nearest". Only used if target CRS and/or spatial resolution are provided, otherwise data is returned in the CRS of the dataset and no reprojection is needed. If two methods are provided (comma separated, e.g. "bilinear,nearest"), the first will be used for continuous variables and the second will be used for categorical variables. An error will be returned when methods requested for categorical variables are not applicable.
+            dsn (Optional[Union[str, os.PathLike]]):
+                Destination for downloaded files. Default is current working directory.
+            req_name (Optional[str]):
+                The request name. Used to name the folder containing the downloaded data. If not set, the output directory is named "gcdl_subset" plus a timestamp of the request.
+
+
+
+        Returns:
+            str: A list of downloaded filenames.
+        """
 
         endpoint = 'subset_polygon'
 
@@ -151,21 +228,61 @@ class PyGeoCDL:
 
     def download_points_subset(
         self,
-        dsvars,
-        dates = None,
-        years = None,
-        months = None,
-        days = None,
-        t_crs = None, 
-        resolution = None,
-        t_geom = None,
-        out_format = 'csv',
-        grain_method = 'strict',
-        validate_method = 'strict',
-        ri_method = 'nearest',
-        dsn = '.',
-        req_name = None
+        dsvars: Union[pd.DataFrame, np.ndarray, list, dict],
+        dates: Optional[Union[list[str], str]] = None,
+        years: Optional[str] = None,
+        months: Optional[str] = None,
+        days: Optional[str] = None,
+        t_crs: Optional[str] = None, 
+        t_geom: Optional[Union[str, list[str], gpd.GeoDataFrame]] = None,
+        out_format: Optional[str] = 'csv',
+        grain_method: Optional[str] = 'strict',
+        validate_method: Optional[str] = 'strict',
+        ri_method: Optional[str] = 'nearest',
+        dsn: Optional[Union[str, os.PathLike]] = '.',
+        req_name: Optional[str] = None
     ):
+        """Download point-based data
+
+        Args:
+            dsvars (Union[pandas.DataFrame, numpy.ndarray, list, dict]):    
+                The GeoCDL dataset and variable IDs requested. Use `list_datasets()` and `get_dataset_info()` to see available datasets and variables. If specified as a `pandas.DataFrame` or a `numpy.ndarray`, then list one row per variable with the first column representing the dataset ID and the second column representing the variable ID. If specified as a list, each element must be a list itself containing the dataset ID, followed by the variable ID. If specified as a dict, then list each dataset ID is a key linking to a list of variable IDs.
+            dates (Optional[Union[list[str], str]]): List of dates requested.
+                Each individual date is specified as a string. Ranges of dates can be specified with a colon, for example "2000-01-01:2000-01-31". User can specify multiple dates or multiple date ranges either by separating with a comma, or putting each individual date or range in a list. For example, "2000-01-01,2000-01-02" and ["2000-01-01", "2000-01-02"] are equivalent.
+            years (Optional[str]): List of years requested. 
+                Individual years and year ranges and year ranges are comma separated. For example, "2000,2005:2008". Ignored if `dates` is specified.
+            months (Optional[str]): List of months requested. 
+                Individual months and month ranges are comma separated. Each month is applied to each year. For example, if `years="2000:2001"`, and `months="7:8"`, then the user is requesting July and August of 2000 and 2001. Ignored if `dates` is specified.
+            days (Optional[str]): List of days requested. 
+                Individual days and day ranges are comma separated. If `months` is specified, then `days` represents the day of the month. If `months` is not specified, then `days` represents the days of the year. Ignored if `dates` is specified.
+            t_crs (Optional[str]): Target CRS. 
+                Also used as the crs of the uploaded geometry if no geographic metadata is included in geometry (ie if user uploads a geojson file).
+            t_geom (Optional[Union[str, list[str], geopandas.GeoDataFrame]]):
+                The points geometry of interest, specified as either a Geometry Upload ID (GUID), and list of GUIDs, or a geopandas.GeoDataFrame. If t_geom is not set, GeoCDL returns the entire spatial extent of the dataset.
+            out_format (Optional[str]): Desired format of output files.
+                Choose from "csv", "shapefile" or "netcdf". Default value is "csv".
+            grain_method (Optional[str]):
+                If not all datasets you request have the same temporal grain, e.g. you request monthly data but one dataset only has daily data or only has annual data, you can specify `grain_method` to choose an alternative temporal grain. Default is "strict". Options include: 
+
+                    * **"strict"**: User will only accept the requested date grain. If date grain is not available, GCDL will throw an error. 
+                    * **"skip"**: If date grain is not available, do not return data for that dataset and variable. Will not throw an error. 
+                    * **"finer"**: User will accept the requested date grain, or a finer date grain. Finer grains attempted in order from largest to smallest. Ex: if user requests annual date grain and the finer grain method, and annual data is not available, GCDL will first see if monthly data is available, and if not will then try daily data. 
+                    * **"coarser"**: User will accept the requested date grain, or a coarser date grain. Coarser grains attempted in order from smallest to largest. 
+                    * **"any"**: User will accept any alternative date grain. Alternative grains are attempted from largest to smallest.
+            validate_method (Optional[str]):
+                How to handle requested dates outside of requested dataset available data range. If "strict" (default), an error will be returned. If "overlap", the requested dates will be truncated to the date range available in all requested datasets. If "all", then the requested dates will be truncated to the available date range per dataset. Non-temporal datasets are always returned.
+            ri_method (Optional[str]):
+                Resampling or interpolation method used for reprojection. Resampling methods apply to polygon requests, and interpolation methods apply to point requests. Resampling method options include "nearest", "bilinear", "cubic", "cubic-spline", "lanczos", "average", or "mode". Interpolation method options include "nearest" and "linear". Default is "nearest". Only used if target CRS and/or spatial resolution are provided, otherwise data is returned in the CRS of the dataset and no reprojection is needed. If two methods are provided (comma separated, e.g. "bilinear,nearest"), the first will be used for continuous variables and the second will be used for categorical variables. An error will be returned when methods requested for categorical variables are not applicable.
+            dsn (Optional[Union[str, os.PathLike]]):
+                Destination for downloaded files. Default is current working directory.
+            req_name (Optional[str]):
+                The request name. Used to name the folder containing the downloaded data. If not set, the output directory is named "gcdl_subset" plus a timestamp of the request.
+
+
+
+        Returns:
+            str: A list of downloaded filenames.
+        """
 
         endpoint = 'subset_points'
         q_str, param_dict = self._format_subset_query(
@@ -176,7 +293,6 @@ class PyGeoCDL:
             months=months, 
             days=days, 
             t_crs=t_crs, 
-            resolution=resolution, 
             t_geom=t_geom,
             out_format=out_format, 
             grain_method=grain_method,
@@ -203,7 +319,50 @@ class PyGeoCDL:
         dsn = '.',
         req_name = None
     ):
-        endpoint = self.infer_endpoint(t_geom)
+        """Download point or raster data depending on inferred geometry type.
+
+        Args:
+            dsvars (Union[pandas.DataFrame, numpy.ndarray, list, dict]):    
+                The GeoCDL dataset and variable IDs requested. Use `list_datasets()` and `get_dataset_info()` to see available datasets and variables. If specified as a `pandas.DataFrame` or a `numpy.ndarray`, then list one row per variable with the first column representing the dataset ID and the second column representing the variable ID. If specified as a list, each element must be a list itself containing the dataset ID, followed by the variable ID. If specified as a dict, then list each dataset ID is a key linking to a list of variable IDs.
+            dates (Optional[Union[list[str], str]]): List of dates requested.
+                Each individual date is specified as a string. Ranges of dates can be specified with a colon, for example "2000-01-01:2000-01-31". User can specify multiple dates or multiple date ranges either by separating with a comma, or putting each individual date or range in a list. For example, "2000-01-01,2000-01-02" and ["2000-01-01", "2000-01-02"] are equivalent.
+            years (Optional[str]): List of years requested. 
+                Can include year ranges. Individual years or year ranges are comma separated. For example, "2000,2005:2008". Ignored if `dates` is specified.
+            months (Optional[str]): List of months requested. 
+                Individual months and month ranges are comma separated. Each month is applied to each year. For example, if `years="2000:2001"`, and `months="7:8"`, then the user is requesting July and August of 2000 and 2001. Ignored if `dates` is specified.
+            days (Optional[str]): List of days requested. 
+                Individual days and day ranges are comma separated. If `months` is specified, then `days` represents the day of the month. If `months` is not specified, then `days` represents the days of the year. Ignored if `dates` is specified.
+            t_crs (Optional[str]): Target CRS. 
+                Also used as the crs of the uploaded geometry if no geographic metadata is included in geometry (ie if user uploads clipping coordinates or a geojson file).
+            resolution (Optional[str]): 
+                Desired output resolution in units of the output CRS. Ignored for point data.
+            t_geom (Optional[Union[str, list[str], geopandas.GeoDataFrame, numpy.ndarray]]):
+                The polygon of interest, specified as either a Geometry Upload ID (GUID), and list of GUIDs, a geopandas.GeoDataFrame, or a numpy.ndarray specifying x and y coordinates of a clipping polygon. If only two clipping coordinates are provided, then they are assumed to be opposite corners of a bounding box. Clipping coordinates are assumed to be in the crs specified by `t_crs` if specified, and if not, are assumed to be in the crs of the first requested dataset. If t_geom is not set, GeoCDL returns the entire spatial extent of the dataset.
+            out_format (Optional[str]): Desired format of output files.
+                For polygon data, choose between "geotiff" (default) or "netcdf". For point data, choose between "csv" (default), "shapefile", or "netcdf".
+            grain_method (Optional[str]):
+                If not all datasets you request have the same temporal grain, e.g. you request monthly data but one dataset only has daily data or only has annual data, you can specify `grain_method` to choose an alternative temporal grain. Default is "strict". Options include: 
+
+                    * **"strict"**: User will only accept the requested date grain. If date grain is not available, GCDL will throw an error. 
+                    * **"skip"**: If date grain is not available, do not return data for that dataset and variable. Will not throw an error. 
+                    * **"finer"**: User will accept the requested date grain, or a finer date grain. Finer grains attempted in order from largest to smallest. Ex: if user requests annual date grain and the finer grain method, and annual data is not available, GCDL will first see if monthly data is available, and if not will then try daily data. 
+                    * **"coarser"**: User will accept the requested date grain, or a coarser date grain. Coarser grains attempted in order from smallest to largest. 
+                    * **"any"**: User will accept any alternative date grain. Alternative grains are attempted from largest to smallest.
+            validate_method (Optional[str]):
+                How to handle requested dates outside of requested dataset available data range. If "strict" (default), an error will be returned. If "overlap", the requested dates will be truncated to the date range available in all requested datasets. If "all", then the requested dates will be truncated to the available date range per dataset. Non-temporal datasets are always returned.
+            ri_method (Optional[str]):
+                Resampling or interpolation method used for reprojection. Resampling methods apply to polygon requests, and interpolation methods apply to point requests. Resampling method options include "nearest", "bilinear", "cubic", "cubic-spline", "lanczos", "average", or "mode". Interpolation method options include "nearest" and "linear". Default is "nearest". Only used if target CRS and/or spatial resolution are provided, otherwise data is returned in the CRS of the dataset and no reprojection is needed. If two methods are provided (comma separated, e.g. "bilinear,nearest"), the first will be used for continuous variables and the second will be used for categorical variables. An error will be returned when methods requested for categorical variables are not applicable.
+            dsn (Optional[Union[str, os.PathLike]]):
+                Destination for downloaded files. Default is current working directory.
+            req_name (Optional[str]):
+                The request name. Used to name the folder containing the downloaded data. If not set, the output directory is named "gcdl_subset" plus a timestamp of the request.
+
+
+
+        Returns:
+            str: A list of downloaded filenames.
+        """
+        endpoint = self._infer_endpoint(t_geom)
         print("Endpoint = ", endpoint)
         if endpoint == "subset_polygon":
             out_files = self.download_polygon_subset(
@@ -310,6 +469,8 @@ class PyGeoCDL:
         if not Path(dsn).is_dir():
             raise Exception("Destination folder DNE")
 
+        dsn = Path(dsn)
+
         # Create output zip file path, based on time and date of creation
         if req_name is None:
             basename = "gcdl_subset"
@@ -347,9 +508,12 @@ class PyGeoCDL:
                 params["geom_guid"] = req_spatial
             r = requests.get(query_str, params=params, headers=headers)
             print(r.url)
-            if r.status_code >= 400:
+            if not r.ok:
                 print("Status_code: ", r.status_code)
-                print(r.text)
+                if 'application/json' in r.headers.get('Content-Type'):
+                    raise Exception(r.json()["detail"])
+                else:
+                    raise Exception(r.text)
             else:
                 # Write contents to zip file in chunks
                 with open(subset_zip, 'wb') as f:
@@ -360,7 +524,7 @@ class PyGeoCDL:
                     print("Files downloaded and unzipped: ", f.namelist())
                     file_names = f.namelist()
                     # add output directory to file name
-                    file_names_out = [str(Path(dsn / k).as_posix()) for k in f.namelist()]
+                    file_names_out = [str(Path(dsn / k)) for k in f.namelist()]
                     out_files.extend(file_names_out)
                     f.extractall(Path(dsn))
         return out_files
@@ -383,7 +547,7 @@ class PyGeoCDL:
                 new_file = file.with_suffix(suffix)
                 if not new_file.is_file():
                     raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), new_file)
-                z.write(new_file)
+                z.write(new_file, arcname=new_file.name)
 
         return(output_zip_dir)
 
@@ -404,10 +568,11 @@ class PyGeoCDL:
             dsvars = pd.DataFrame(dsvars, columns=["dataset", "variable"])
             dsvars = dsvars.iloc[:,0:2]
         elif isinstance(dsvars, dict):
-            dsvars = pd.DataFrame(columns=["dataset", "variable"])
+            dsvars_out = pd.DataFrame(columns=["dataset", "variable"])
             for dataset, var_list in dsvars.items():
                 for var in var_list:
-                    dsvars.loc[len(dsvars.index)] = [dataset, var]
+                    dsvars_out.loc[len(dsvars_out.index)] = [dataset, var]
+            dsvars = dsvars_out
         else:
             raise Exception("Dataset variables format not accepted")
 
@@ -450,7 +615,7 @@ class PyGeoCDL:
             print("No geometry specified")
             return spatial_subset
 
-        # A string geom could be either a guid, a filename, or a geodataframe
+        # A string geom could be either a guid or a file name
         elif isinstance(geom, str):
             # if geom is a single guid
             if len(geom) == 36 and not "." in geom and "(" not in geom:
@@ -520,7 +685,7 @@ class PyGeoCDL:
 
         return spatial_parameters
 
-    def infer_endpoint(self, geom):
+    def _infer_endpoint(self, geom):
         poly_ep = "subset_polygon"
         pt_ep = "subset_points"
 
